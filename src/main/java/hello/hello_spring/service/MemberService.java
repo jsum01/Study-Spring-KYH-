@@ -9,15 +9,22 @@ import java.util.Optional;
 
 public class MemberService {
 
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
+    private final MemberRepository memberRepository;
 
+    /**
+     * 이렇게 MemberService 생성자로 생성하면, 다른 곳에서 new를 통해 인스턴스를 따로 생성하는 것이 아니라
+     * MemberService(memberRepository <- 이렇게 전달하면서 동일한 객체를 사용할 수 있다)
+     */
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     /**
      * 회원 가입
      */
     public Long join(Member member) {
         // 비즈니스 룰: 같은 이름이 있는 중복 회원 X
-        validateDulicateMember(member); // 메서드화 단축키: Command + Option + M
+        validateDulicateMember(member); // 중복회원 검증 -> 메서드화 단축키: Command + Option + M
         // 기존에는 If(null이 아니면) 이런 식으로 했겠지만, 지금은 null일 가능성이 있으면 Optional로 감싼다.
         // result.get보다는 result.orElseGet과 같은 메서드를 사용한다.
         /*
